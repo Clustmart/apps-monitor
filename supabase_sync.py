@@ -124,7 +124,7 @@ def add_from_sqlite_table(table_name):
 
 
 def delete_table_content(table_name):
-    data = supabase.table(table_name).delete().neq('id', 0).execute()
+    data = supabase.table(table_name).delete().neq('id', -1).execute()
     print(data)
 
 
