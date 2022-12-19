@@ -1,0 +1,9 @@
+configparser
+requests
+urllib
+app_store_scraper 
+google_play_scraper 
+pandas
+logging
+jira 
+supabase

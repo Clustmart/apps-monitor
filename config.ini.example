@@ -1,0 +1,29 @@
+[Log]
+File=
+# Existing logging levels: CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET
+Level=DEBUG
+
+[Database]
+DB_Name=
+[Wait]
+Min=64
+Max=1789
+
+[Email]
+Username=
+Password=
+Email=
+Host=
+Port=465
+Email_To=
+
+[Jira]
+API=
+Email=
+API_Token=
+URL=
+ProjectID=10012
+
+[Action]
+Execute=Now                 # Possible selection: Now, Delay
+NewReview=CreateJiraTicket  # Possible selection: CreateJiraTicket, SendEmail

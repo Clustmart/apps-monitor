@@ -2,7 +2,7 @@
 # Sznc the sqlite datanase with supabase
 #
 #####################################################################
-# Version: 0.1.0
+# Version: 0.1.1
 # Email: paul.wasicsek@gmail.com
 # Status: dev
 #####################################################################
@@ -125,22 +125,27 @@ def add_from_sqlite_table(table_name):
 
 def delete_table_content(table_name):
     data = supabase.table(table_name).delete().neq('id', -1).execute()
-    print(data)
+    print("Delete:", data)
+
+
+def delete_table_content_null(table_name):
+    data = supabase.table(table_name).delete().eq('id', 0).execute()
+    print("Delete:", data)
 
 
 def main():
-    delete_table_content('applications')
+    delete_table_content_null('applications')
     add_from_sqlite_table('applications')
-    delete_table_content('applications_list')
-    add_from_sqlite_table('applications_list')
-    delete_table_content('countries')
-    add_from_sqlite_table('countries')
-    delete_table_content('languages')
-    add_from_sqlite_table('languages')
-    delete_table_content('languages')
-    add_from_sqlite_table('languages')
-    delete_table_content('reviews')
+    # delete_table_content_null('applications_list')
+    # add_from_sqlite_table('applications_list')
+    # delete_table_content_null('countries')
+    # add_from_sqlite_table('countries')
+    # delete_table_content_null('languages')
+    # add_from_sqlite_table('languages')
+    delete_table_content_null('reviews')
     add_from_sqlite_table('reviews')
+    # delete_table_content_null('stores')
+    # add_from_sqlite_table('stores')
 
 
 if __name__ == "__main__":
