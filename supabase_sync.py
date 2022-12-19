@@ -129,16 +129,16 @@ def delete_table_content(table_name):
 
 
 def main():
-    # delete_table_content('applications')
-    # add_from_sqlite_table('applications')
-    # delete_table_content('applications_list')
-    # add_from_sqlite_table('applications_list')
-    # delete_table_content('countries')
-    # add_from_sqlite_table('countries')
-    # delete_table_content('languages')
-    # add_from_sqlite_table('languages')
-    # delete_table_content('languages')
-    # add_from_sqlite_table('languages')
+    delete_table_content('applications')
+    add_from_sqlite_table('applications')
+    delete_table_content('applications_list')
+    add_from_sqlite_table('applications_list')
+    delete_table_content('countries')
+    add_from_sqlite_table('countries')
+    delete_table_content('languages')
+    add_from_sqlite_table('languages')
+    delete_table_content('languages')
+    add_from_sqlite_table('languages')
     delete_table_content('reviews')
     add_from_sqlite_table('reviews')
 
