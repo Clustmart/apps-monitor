@@ -2,7 +2,7 @@
 # Sznc the sqlite datanase with supabase
 #
 #####################################################################
-# Version: 0.1.1
+# Version: 0.1.2
 # Email: paul.wasicsek@gmail.com
 # Status: dev
 #####################################################################
@@ -120,21 +120,24 @@ def add_from_sqlite_table(table_name):
         # print(str(json_data))
         main_list.append(json_data)
     data = supabase.table(table_name).insert(main_list).execute()
-    print(data)
+    # print(data)
 
 
 def delete_table_content(table_name):
     data = supabase.table(table_name).delete().neq('id', -1).execute()
-    print("Delete:", data)
+    # print("Delete:", data)
 
 
 def delete_table_content_null(table_name):
     data = supabase.table(table_name).delete().eq('id', 0).execute()
-    print("Delete:", data)
+    # print("Delete:", data)
 
 
-def main():
+def main()
+    log.info("Supabase sync start")
+    log.info("Delete table applications")
     delete_table_content_null('applications')
+    log.info("Import table applications")
     add_from_sqlite_table('applications')
     # delete_table_content_null('applications_list')
     # add_from_sqlite_table('applications_list')
@@ -142,8 +145,10 @@ def main():
     # add_from_sqlite_table('countries')
     # delete_table_content_null('languages')
     # add_from_sqlite_table('languages')
+    log.info("Delete table reviews")
     delete_table_content_null('reviews')
     add_from_sqlite_table('reviews')
+    log.info("Import table reviews")
     # delete_table_content_null('stores')
     # add_from_sqlite_table('stores')
 
