@@ -1,5 +1,5 @@
 #####################################################################
-# Sznc the sqlite datanase with supabase
+# Sync the sqlite datanase with supabase
 #
 #####################################################################
 # Version: 0.1.2
