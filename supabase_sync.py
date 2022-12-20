@@ -130,7 +130,7 @@ def delete_table_content_null(table_name):
 def main():
     log.info("Supabase sync start")
     log.info("Delete table applications")
-    delete_table_content_null('applications')
+    delete_table_content('applications')
     log.info("Import table applications")
     add_from_sqlite_table('applications')
     # delete_table_content_null('applications_list')
@@ -140,7 +140,7 @@ def main():
     # delete_table_content_null('languages')
     # add_from_sqlite_table('languages')
     log.info("Delete table reviews")
-    delete_table_content_null('reviews')
+    delete_table_content('reviews')
     add_from_sqlite_table('reviews')
     log.info("Import table reviews")
     # delete_table_content_null('stores')
