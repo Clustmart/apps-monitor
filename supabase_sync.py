@@ -2,7 +2,7 @@
 # Sync the sqlite datanase with supabase
 #
 #####################################################################
-# Version: 0.1.2
+# Version: 0.1.3
 # Email: paul.wasicsek@gmail.com
 # Status: dev
 #####################################################################
@@ -114,26 +114,20 @@ def add_from_sqlite_table(table_name):
             rowA = rowA + '"' + name + '":"' + result + '"'
             row_id = row_id + 1
         rowA = rowA + '}'
-        # print(str(rowA))
-        print(rowA)
         json_data = json.loads(rowA, strict=False)
-        # print(str(json_data))
         main_list.append(json_data)
     data = supabase.table(table_name).insert(main_list).execute()
-    # print(data)
 
 
 def delete_table_content(table_name):
     data = supabase.table(table_name).delete().neq('id', -1).execute()
-    # print("Delete:", data)
 
 
 def delete_table_content_null(table_name):
     data = supabase.table(table_name).delete().eq('id', 0).execute()
-    # print("Delete:", data)
 
 
-def main()
+def main():
     log.info("Supabase sync start")
     log.info("Delete table applications")
     delete_table_content_null('applications')
