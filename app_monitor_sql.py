@@ -4,7 +4,7 @@
 ## Play Store and save the latest result in the local Sqlite3
 ## database for further processing and reports
 #####################################################################
-## Version: 0.6.1
+## Version: 0.6.2
 ## Email: paul.wasicsek@gmail.com
 ## Status: dev
 #####################################################################
@@ -164,6 +164,7 @@ def send_message(From, To, Subject, Attachment):
 
 def new_review_title(result):
     log.debug("... and also a new review title")
+    log.debug("last review  RESULT:", str(result[0]))
     query = "UPDATE applications SET last_review_date = ?, last_review_title = ?, last_review_rating = ? WHERE id_app = " + str(
         fk_id_app) + " AND id_store = " + str(
             fk_id_store) + " AND id_country = " + str(
@@ -273,16 +274,18 @@ def main():
                 appstore_app.review()
                 app_reviews = appstore_app.reviews
 
-                # check that there is already a review
+                # check that there is already a reviewUPDATE applications SET last_review_date
                 if (len(app_reviews) > 0):
                     log.debug("There are some reviews")
                     pd_reviews = pd.DataFrame(app_reviews)
                     sorted_reviews = pd_reviews.sort_values(by='date',
                                                             ascending=False)
                     last_review = sorted_reviews.iloc[0]
+
                     # if it's a new review, save it and send email
                     if (last_review_title != last_review['title']):
                         log.debug("There is a NEW user review title")
+                        log.debug("last review:", last_review)
                         query = "UPDATE applications SET last_review_date = ?, last_review_title = ?, last_review_rating =? WHERE id_app = " + str(
                             fk_id_app) + " AND id_store = " + str(
                                 fk_id_store) + " AND id_country = " + str(
