@@ -1,9 +1,8 @@
 configparser
 requests
-urllib
+urllib3
 app_store_scraper 
 google_play_scraper 
 pandas
 logging
-jira 
 supabase
