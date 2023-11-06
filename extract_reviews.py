@@ -38,23 +38,25 @@ config = configparser.ConfigParser()
 try:
     config.read("config.ini")
 except Exception as err:
-    print('Cannot read INI file due to Error: %s' % (str(err)))
+    print("Cannot read INI file due to Error: %s" % (str(err)))
     exit()
 
 # Customize path to your SQLite database
-database = config['Database']['DB_Name']
+database = config["Database"]["DB_Name"]
 
-batch_size = int(config['PlayStore']['BatchSize'])
-max_reviews = int(config['PlayStore']['MaxDownloadedReviews'])
+batch_size = int(config["PlayStore"]["BatchSize"])
+max_reviews = int(config["PlayStore"]["MaxDownloadedReviews"])
 
-log.basicConfig(filename=os.path.splitext(__file__)[0] + ".log",
-                level=os.environ.get("LOGLEVEL", config['Log']['Level']),
-                format='%(asctime)s [%(levelname)s] %(message)s',
-                datefmt='%Y-%m-%d %H:%M:%S ')
+log.basicConfig(
+    filename=os.path.splitext(__file__)[0] + ".log",
+    level=os.environ.get("LOGLEVEL", config["Log"]["Level"]),
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S ",
+)
 
-if (config['Action']['Execute'] == "Delay"):
+if config["Action"]["Execute"] == "Delay":
     # Include a waiting period, so the algorithm doesn't think it's automatic processing
-    t = randint(int(config['Wait']['Min']), int(config['Wait']['Max']))
+    t = randint(int(config["Wait"]["Min"]), int(config["Wait"]["Max"]))
     time.sleep(t)
 
 # Connect to the database
@@ -62,23 +64,23 @@ try:
     conn = sqlite3.connect(database)
     cursor = conn.cursor()
 except Exception as err:
-    print('Connecting to DB failed due to: %s\n' % (str(err)))
+    print("Connecting to DB failed due to: %s\n" % (str(err)))
     exit()
 
 
 # execute query
 def execute(query, param):
     log.debug("SQL:" + query)
-    if (len(param) > 0):
+    if len(param) > 0:
         log.debug("Param:" + str(param))
     return_value = ""
     try:
         return_value = cursor.execute(query, param)
-        if (query.startswith("UPDATE") or query.startswith("INSERT")):
+        if query.startswith("UPDATE") or query.startswith("INSERT"):
             cursor.execute("COMMIT")
     except Exception as err:
-        print('Query Failed: %s\nError: %s' % (query, str(err)))
-    return (return_value)
+        print("Query Failed: %s\nError: %s" % (query, str(err)))
+    return return_value
 
 
 #
@@ -91,26 +93,53 @@ def execute(query, param):
 #   the value stored in the result column
 #
 def sql_value(table, query_field, query_value, result_field):
-    query = "select " + result_field + " from " + table + " where " + query_field + " = " + str(
-        query_value)
+    query = (
+        "select "
+        + result_field
+        + " from "
+        + table
+        + " where "
+        + query_field
+        + " = "
+        + str(query_value)
+    )
     execute(query, "")
     row = cursor.fetchone()
     log.debug("Return:" + str(row[0]))
-    return (str(row[0]))
+    return str(row[0])
 
 
 def save_ios_reviews(review):
     log.debug(str(review))
     query = "INSERT INTO reviews(app, store, review_id, reviewer_name, review_title, review_description, rating, thumbs_up, review_date, developer_response, developer_response_date) VALUES (?,?,?,?,?,?,?,?,?,?,?)"
     try:
-        param = (app_app, application_store, "", review['userName'],
-                 review['title'], review['review'], review['rating'], "",
-                 review['date'], review['developerResponse']['body'],
-                 review['developerResponse']['modified'])
+        param = (
+            app_app,
+            application_store,
+            "",
+            review["userName"],
+            review["title"],
+            review["review"],
+            review["rating"],
+            "",
+            review["date"],
+            review["developerResponse"]["body"],
+            review["developerResponse"]["modified"],
+        )
     except:
-        param = (app_app, application_store, "", review['userName'],
-                 review['title'], review['review'], review['rating'], "",
-                 review['date'], "", "")
+        param = (
+            app_app,
+            application_store,
+            "",
+            review["userName"],
+            review["title"],
+            review["review"],
+            review["rating"],
+            "",
+            review["date"],
+            "",
+            "",
+        )
     log.debug("Param: " + str(param))
     execute(query, param)
 
@@ -118,10 +147,19 @@ def save_ios_reviews(review):
 def save_android_reviews(result):
     for review in result:
         query = "INSERT INTO reviews(app, store, review_id, reviewer_name, review_title, review_description, rating, thumbs_up, review_date, developer_response, developer_response_date) VALUES (?,?,?,?,?,?,?,?,?,?,?)"
-        param = (app_app, application_store, review['reviewId'],
-                 review['userName'], "", review['content'], review['score'],
-                 review['thumbsUpCount'], review['at'], review['replyContent'],
-                 review['repliedAt'])
+        param = (
+            app_app,
+            application_store,
+            review["reviewId"],
+            review["userName"],
+            "",
+            review["content"],
+            review["score"],
+            review["thumbsUpCount"],
+            review["at"],
+            review["replyContent"],
+            review["repliedAt"],
+        )
         execute(query, param)
 
 
@@ -147,39 +185,55 @@ def main():
         fk_id_store = c_app[2]
         fk_id_country = c_app[3]
         fk_id_language = c_app[4]
-        application_name = sql_value("applications_list", "id_app", fk_id_app,
-                                     "application_name")
-        application_store = sql_value("stores", "id_store", fk_id_store,
-                                      "store_name")
-        application_country = sql_value("countries", "id_country",
-                                        fk_id_country, "code")
-        application_language = sql_value("languages", "id_language",
-                                         fk_id_language, "code")
+        application_name = sql_value(
+            "applications_list", "id_app", fk_id_app, "application_name"
+        )
+        application_store = sql_value("stores", "id_store", fk_id_store, "store_name")
+        application_country = sql_value(
+            "countries", "id_country", fk_id_country, "code"
+        )
+        application_language = sql_value(
+            "languages", "id_language", fk_id_language, "code"
+        )
 
         app_app = c_app[field_names.index("app")]
         app_id = c_app[field_names.index("app_id")]
         app_name = c_app[field_names.index("app_name")]
 
-        log.info("*** Application name: " + application_name + " Store: " +
-                 application_store + "Country: " + application_country +
-                 "Language: " + application_language + " app name: " +
-                 app_name)
+        log.info(
+            "*** Application name: "
+            + application_name
+            + " Store: "
+            + application_store
+            + "Country: "
+            + application_country
+            + "Language: "
+            + application_language
+            + " app name: "
+            + app_name
+        )
 
         # check iOS application
-        if (application_store == "App Store"):
-            appstore_app = AppStore(country=application_country,
-                                    app_name=app_name,
-                                    app_id=app_id)
+        if application_store == "App Store":
+            appstore_app = AppStore(
+                country=application_country, app_name=app_name, app_id=app_id
+            )
             appstore_app.review()
             for review in appstore_app.reviews:
                 save_ios_reviews(review)
 
-        if (application_store == "Google Play"):
-            result = app(app_name,
-                         lang=application_language,
-                         country=application_country)
-            log.info("result: app name, lang, country: " + app_name + ", " +
-                     application_language + ", " + application_country)
+        if application_store == "Google Play":
+            result = app(
+                app_name, lang=application_language, country=application_country
+            )
+            log.info(
+                "result: app name, lang, country: "
+                + app_name
+                + ", "
+                + application_language
+                + ", "
+                + application_country
+            )
             _count = 0
 
             result, continuation_token = reviews(
@@ -187,7 +241,7 @@ def main():
                 lang=application_language,
                 country=application_country,
                 count=200,  # defaults to 100
-                filter_score_with=None  # defaults to None(means all score)
+                filter_score_with=None,  # defaults to None(means all score)
             )
             save_android_reviews(result)
             while type(continuation_token) is type(str()):
@@ -203,5 +257,5 @@ def main():
                 time.sleep(randint(1, 5))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
