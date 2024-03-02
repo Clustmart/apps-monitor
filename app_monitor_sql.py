@@ -4,7 +4,7 @@
 # Play Store and save the latest result in the local Sqlite3
 # database for further processing and reports
 #####################################################################
-# Version: 0.7.0
+# Version: 0.7.1
 # Email: paul.wasicsek@gmail.com
 # Status: dev
 #####################################################################
@@ -271,9 +271,9 @@ def app_store(c_app, field_names):
                         + application_country
                         + "] New App Store Rating/Review: "
                         + str(last_review["rating"])
-                        + " - "
+                        + " - Title: "
                         + last_review["title"],
-                        "New rating or review was published in app store:"
+                        "New rating or review was published in App Store:"
                         + c_app[field_names.index("url")],
                     )
         update_visit_date(c_app)
@@ -357,10 +357,11 @@ def play_store(c_app, field_names):
                         + application_country
                         + "] App Store Rating/Review: "
                         + str(result[0]["score"]),
-                        "New rating or review was published in app store:"
+                        "New rating or review was published in Play Store:"
                         + c_app[field_names.index("url")]
-                        + "\r\n"
-                        + result[0]["content"],
+                        + "\r\n Review ID:"
+                        + result[0]["reviewId"],
+                        +"\r\n Content:" + result[0]["content"],
                     )
     else:
         update_visit_date(c_app)
